@@ -9,7 +9,7 @@
 int main()
 {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(GameConfig::BASE_W, GameConfig::BASE_H, "Swarm");
+    InitWindow(GameConfig::BASE_W, GameConfig::BASE_H, "Neon Trigger");
     SetTargetFPS(60);
     DisableCursor();
 
