@@ -41,14 +41,4 @@ All 14 audio files are in use; none are idle.
 
 ## How to replace a sound
 
-1. **Swap the file, keep the name** — drop the new .wav into `assets/audio`
-   with the same filename. Zero code changes.
-2. **New filename** — edit ONE line in `ResourceManager::Load()`
-   (`src/ResourceManager.cpp`), e.g.
-   `loadSound(RK::SND_SHOOT, "my-new-gun.wav");`
-   The rest of the code refers to the key (`RK::SND_SHOOT`), never the filename.
-3. **Change which enemy uses which death/grunt sound** — edit the last two
-   columns of the type table in `src/EnemyType.hpp`.
-4. **Add a brand-new sound** — add a key in `src/ResourceKeys.hpp`, a
-   `loadSound` line in `ResourceManager::Load()`, then play it anywhere with
-   `Audio::Play(RK::YOUR_KEY)`.
+
