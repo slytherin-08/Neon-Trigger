@@ -1,0 +1,21 @@
+1. Window Open-
+Here's your cheat sheet for the window & rendering part:
+
+SetConfigFlags(FLAG_WINDOW_RESIZABLE) — called before InitWindow; allows the user to drag-resize the window.
+InitWindow(1280, 720, "Neon Trigger") — creates the game window with that width, height (in pixels), and title bar text.
+SetTargetFPS(60) — caps the loop at 60 frames/second by sleeping the rest of each 16.6 ms slot; saves CPU/GPU since monitors can't show more.
+GetMonitorPosition(1) — returns where monitor #2 begins in the desktop's big coordinate map (monitors count from 0).
+SetWindowPosition(x, y) — moves the window's top-left corner to that desktop point; combined with the above = "center the window on the second monitor."
+LoadRenderTexture(1280, 720) — creates the invisible fixed-size canvas; the game always draws here, so game code can assume the screen is 1280×720 forever.
+SetTextureFilter(..., BILINEAR) — makes the canvas blend pixels smoothly (not blocky) when stretched.
+GetScreenWidth() / GetScreenHeight() — the window's current real size; used to compute scale = min(w/1280, h/720) for letterboxing.
+WindowShouldClose() — true when the user clicks X; ends the main loop.
+GetFrameTime() — how long the last frame took (~0.0166s); this is the dt that makes all movement frame-rate independent.
+BeginDrawing() / EndDrawing() — "I'm composing a frame" / "show it now"; the FPS sleep happens inside EndDrawing.
+ClearBackground(BLACK) — wipes the previous frame; makes the letterbox bars black.
+DrawTexturePro(canvas, src, dest, origin, rotation, tint) — stretches the canvas onto the window; src height is negative to cancel OpenGL's upside-down texture storage.
+UnloadRenderTexture / CloseAudioDevice / CloseWindow — cleanup at exit: give borrowed memory back.
+
+Memory trick — group them as the window's life story: setup (SetConfigFlags → InitWindow → SetTargetFPS → position → LoadRenderTexture), every frame (input → Update(dt) → Draw to canvas → scale math → Begin/Clear/DrawTexturePro/End), death (unload + close).
+
+2.
