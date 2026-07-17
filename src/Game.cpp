@@ -336,8 +336,11 @@ bool Game::handleMenus()
     case Screen::Paused:
         if (IsKeyPressed(KEY_P) || IsKeyPressed(KEY_ESCAPE))
             setScreen(Screen::Playing);
-        if (IsKeyPressed(KEY_ENTER))    // abandon run (last level-save remains)
+        if (IsKeyPressed(KEY_ENTER))    // abandon run; save it so Load Game resumes here
+        {
+            Persist::SaveGame({ _playerName, _level, _score, _player.GetHealth() });
             setScreen(Screen::MainMenu);
+        }
         break;
 
     case Screen::GameOver:
