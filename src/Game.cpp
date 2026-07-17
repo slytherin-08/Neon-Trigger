@@ -130,6 +130,26 @@ bool Game::HandleInput()
     return handleMenus();
 }
 
+// Mouse position in canvas coords (window is letterbox-scaled in main.cpp)
+static Vector2 mouseCanvas()
+{
+    float scale = std::min((float)GetScreenWidth()  / GameConfig::BASE_W,
+                           (float)GetScreenHeight() / GameConfig::BASE_H);
+    Vector2 m = GetMousePosition();
+    return { (m.x - (GetScreenWidth()  - GameConfig::BASE_W * scale) * 0.5f) / scale,
+             (m.y - (GetScreenHeight() - GameConfig::BASE_H * scale) * 0.5f) / scale };
+}
+
+// True when the mouse is over a centered menu item drawn at y (font 34).
+// The hitbox is invisible - nothing is drawn for it.
+static bool mouseOverMenuItem(const char* text, int y)
+{
+    float w = (float)MeasureText(text, 34);
+    Rectangle box = { GameConfig::BASE_W / 2.0f - w / 2.0f - 20.0f,
+                      (float)y - 4.0f, w + 40.0f, 42.0f };
+    return CheckCollisionPointRec(mouseCanvas(), box);
+}
+
 bool Game::handleMenus()
 {
     switch (_screen)
@@ -143,8 +163,17 @@ bool Game::handleMenus()
         break;
 
     case Screen::Title:
+    {
         if (navUp() || navDown()) _menuIndex = 1 - _menuIndex;
-        if (IsKeyPressed(KEY_ENTER))
+        bool activate = IsKeyPressed(KEY_ENTER);
+        static const char* tItems[] = { "Start", "Quit" };
+        for (int i = 0; i < 2; i++)
+            if (mouseOverMenuItem(tItems[i], GameConfig::BASE_H / 2 + 10 + i * 48))
+            {
+                _menuIndex = i;
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) activate = true;
+            }
+        if (activate)
         {
             tapSelect();
             if (_menuIndex == 0) setScreen(Screen::MainMenu);
@@ -152,6 +181,7 @@ bool Game::handleMenus()
         }
         if (IsKeyPressed(KEY_ESCAPE)) { tapSelect(); setScreen(Screen::Splash); }
         break;
+    }
 
     case Screen::Credits:
         if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE))
@@ -162,9 +192,18 @@ bool Game::handleMenus()
         break;
 
     case Screen::MainMenu:
+    {
         if (navUp())   _menuIndex = (_menuIndex + 3) % 4;
         if (navDown()) _menuIndex = (_menuIndex + 1) % 4;
-        if (IsKeyPressed(KEY_ENTER))
+        bool activate = IsKeyPressed(KEY_ENTER);
+        static const char* mmItems[] = { "Play", "Help", "High Scores", "Credits" };
+        for (int i = 0; i < 4; i++)
+            if (mouseOverMenuItem(mmItems[i], 260 + i * 48))
+            {
+                _menuIndex = i;
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) activate = true;
+            }
+        if (activate)
         {
             tapSelect();
             switch (_menuIndex)
@@ -177,6 +216,7 @@ bool Game::handleMenus()
         }
         if (IsKeyPressed(KEY_ESCAPE)) { tapSelect(); setScreen(Screen::Title); }
         break;
+    }
 
     case Screen::Help:
         if (navUp() || navDown()) _menuIndex = 1 - _menuIndex;
@@ -231,8 +271,18 @@ bool Game::handleMenus()
         break;
 
     case Screen::PlayMenu:
+    {
         if (navUp() || navDown()) _menuIndex = 1 - _menuIndex;
-        if (IsKeyPressed(KEY_ENTER))
+        bool activate = IsKeyPressed(KEY_ENTER);
+        static const char* pmItems[] = { "New Game", "Load Game" };
+        for (int i = 0; i < 2; i++)
+            if (mouseOverMenuItem(pmItems[i], 280 + i * 48))
+            {
+                if (i == 1 && !_saveExists) continue;   // disabled item
+                _menuIndex = i;
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) activate = true;
+            }
+        if (activate)
         {
             if (_menuIndex == 0)
             {
@@ -250,6 +300,7 @@ bool Game::handleMenus()
         }
         if (IsKeyPressed(KEY_ESCAPE)) { tapSelect(); setScreen(Screen::MainMenu); }
         break;
+    }
 
     case Screen::NameEntry:
     {
