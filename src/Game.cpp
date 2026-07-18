@@ -29,15 +29,6 @@ Game::Game() : _player(RK::PLAYER)
     _enemies.Init(&_player);
     _particles.Init();
 
-    // Flashlight overlay: radial gradient, transparent centre fading to
-    // darkness at the edge. Generated once; drawn around the player.
-    Image grad = GenImageGradientRadial(512, 512, 0.0f,
-                                        ColorAlpha(BLACK, 0.0f),
-                                        ColorAlpha(BLACK, GameConfig::DARKNESS_ALPHA));
-    _lightTex = LoadTextureFromImage(grad);
-    UnloadImage(grad);
-    SetTextureFilter(_lightTex, TEXTURE_FILTER_BILINEAR);
-
     // Persistent data
     _settings = Persist::LoadSettings();
     _highScores = Persist::LoadHighScores();
@@ -54,19 +45,16 @@ Game::Game() : _player(RK::PLAYER)
     setScreen(Screen::Splash);
 }
 
-Game::~Game()
-{
-    UnloadTexture(_lightTex);
-}
+Game::~Game() {}
 
 
 // -------------------------------------------------------------- screens ---
 
 void Game::setScreen(Screen s)
 {
-    _menuMemory[(int)_screen] = _menuIndex;  // remember cursor on the screen we leave
+    _menuMemory[(int)_screen] = _menuIndex;  // Cursor mone rakhbe last koi rakhsilam
     _screen = s;
-    _menuIndex = _menuMemory[(int)s];        // restore it when we come back
+    _menuIndex = _menuMemory[(int)s];        // Eikhane apply hobe
 
     if (s == Screen::LevelIntro || s == Screen::LevelComplete)
         _bannerTimer = GameConfig::BANNER_TIME;
@@ -79,11 +67,10 @@ void Game::setScreen(Screen s)
     else                      { if (IsCursorHidden()) EnableCursor(); }
 }
 
-void Game::beginRun(const std::string& name, int level, int score, int hp, int wave)
+void Game::beginRun(const std::string& name, int level, int score, int hp)
 {
     _playerName = name;
     _score = score;
-    _startWave = wave;
     _player.Reset();
     _player.SetHealth(hp);
     startLevel(level);
@@ -168,7 +155,7 @@ bool Game::handleMenus()
     switch (_screen)
     {
     case Screen::Splash:
-        if (IsKeyPressed(KEY_ENTER) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        if (IsKeyPressed(KEY_ENTER))
         {
             tapSelect();
             setScreen(Screen::Title);
@@ -181,7 +168,7 @@ bool Game::handleMenus()
         bool activate = IsKeyPressed(KEY_ENTER);
         static const char* tItems[] = { "Start", "Quit" };
         for (int i = 0; i < 2; i++)
-            if (mouseOverMenuItem(tItems[i], GameConfig::BASE_H / 2 - 45 + i * 48))
+            if (mouseOverMenuItem(tItems[i], GameConfig::BASE_H / 2 + 10 + i * 48))
             {
                 _menuIndex = i;
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) activate = true;
@@ -232,24 +219,14 @@ bool Game::handleMenus()
     }
 
     case Screen::Help:
-    {
         if (navUp() || navDown()) _menuIndex = 1 - _menuIndex;
-        bool activate = IsKeyPressed(KEY_ENTER);
-        static const char* hItems[] = { "Controls", "Audio" };
-        for (int i = 0; i < 2; i++)
-            if (mouseOverMenuItem(hItems[i], 280 + i * 48))
-            {
-                _menuIndex = i;
-                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) activate = true;
-            }
-        if (activate)
+        if (IsKeyPressed(KEY_ENTER))
         {
             tapSelect();
             setScreen(_menuIndex == 0 ? Screen::Controls : Screen::AudioSettings);
         }
         if (IsKeyPressed(KEY_ESCAPE)) { tapSelect(); setScreen(Screen::MainMenu); }
         break;
-    }
 
     case Screen::Controls:
         if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE))
@@ -262,33 +239,6 @@ bool Game::handleMenus()
     case Screen::AudioSettings:
     {
         if (navUp() || navDown()) _menuIndex = 1 - _menuIndex;
-
-        // Mouse: hover selects a row; click/drag on a bar sets its value.
-        // Bars are drawn by drawSlider(): x 640..880, rows y=280 and y=360.
-        {
-            Vector2 mc = mouseCanvas();
-            for (int i = 0; i < 2; i++)
-            {
-                float rowY = 280.0f + i * 80.0f;
-                Rectangle row = { 380.0f, rowY - 6.0f, 540.0f, 44.0f };
-                if (CheckCollisionPointRec(mc, row)) _menuIndex = i;
-
-                Rectangle bar = { 640.0f, rowY, 240.0f, 30.0f };
-                bool onBar = CheckCollisionPointRec(mc, bar);
-                if (onBar && IsMouseButtonDown(MOUSE_BUTTON_LEFT))
-                {
-                    _menuIndex = i;
-                    int v = (int)((mc.x - 640.0f) / 240.0f * 100.0f + 0.5f);
-                    int* mv = (i == 0) ? &_settings.music : &_settings.sfx;
-                    *mv = std::clamp(v, 0, 100);
-                    Audio::musicVol = _settings.music / 100.0f;
-                    Audio::sfxVol = _settings.sfx / 100.0f;
-                    Audio::ApplyMusicVolume();
-                }
-                if (i == 1 && onBar && IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
-                    Audio::Play(RK::SND_FOOTSTEP_STOP);  // audible SFX feedback
-            }
-        }
 
         int* value = (_menuIndex == 0) ? &_settings.music : &_settings.sfx;
         int step = 0;
@@ -345,7 +295,7 @@ bool Game::handleMenus()
                 tapSelect();
                 Persist::SaveData d;
                 if (Persist::LoadGame(d))
-                    beginRun(d.name, d.level, d.score, d.hp, d.wave);
+                    beginRun(d.name, d.level, d.score, d.hp);
             }
         }
         if (IsKeyPressed(KEY_ESCAPE)) { tapSelect(); setScreen(Screen::MainMenu); }
@@ -388,7 +338,7 @@ bool Game::handleMenus()
             setScreen(Screen::Playing);
         if (IsKeyPressed(KEY_ENTER))    // abandon run; save it so Load Game resumes here
         {
-            Persist::SaveGame({ _playerName, _level, _score, _player.GetHealth(), _wave });
+            Persist::SaveGame({ _playerName, _level, _score, _player.GetHealth() });
             setScreen(Screen::MainMenu);
         }
         break;
@@ -417,8 +367,7 @@ void Game::Update(float dt)
         if (_bannerTimer <= 0.0f)
         {
             setScreen(Screen::Playing);
-            startWave(_startWave);
-            _startWave = 1;   // only the loaded level resumes mid-wave
+            startWave(1);
         }
         break;
 
@@ -465,7 +414,7 @@ void Game::updateWaves()
     else
     {
         // Auto-save at the level boundary: next level, carried score & HP.
-        Persist::SaveGame({ _playerName, _level + 1, _score, _player.GetHealth(), 1 });
+        Persist::SaveGame({ _playerName, _level + 1, _score, _player.GetHealth() });
         setScreen(Screen::LevelComplete);
     }
 }
@@ -567,28 +516,6 @@ void Game::drawWorld()
     _particles.Draw();
     DrawTexture(RM::get().GetTexture(RK::GAME_FG), 0, 0, WHITE);
     EndMode2D();
-
-    // --- flashlight: dark overlay with a soft lit circle on the player ---
-    Vector2 p = GetWorldToScreen2D(_player.GetPosition(), _camera);
-    float r = GameConfig::FLASHLIGHT_RADIUS;
-    Color dark = ColorAlpha(BLACK, GameConfig::DARKNESS_ALPHA);
-    int x0 = (int)(p.x - r), y0 = (int)(p.y - r);
-    int x1 = (int)(p.x + r), y1 = (int)(p.y + r);
-    // gradient square centred on the player...
-    DrawTexturePro(_lightTex,
-                   { 0, 0, (float)_lightTex.width, (float)_lightTex.height },
-                   { (float)x0, (float)y0, (float)(x1 - x0), (float)(y1 - y0) },
-                   { 0, 0 }, 0.0f, WHITE);
-    // ...and solid darkness on the four regions around it (no overlap: seams stay invisible)
-    DrawRectangle(0, 0, GameConfig::BASE_W, y0, dark);                          // top
-    DrawRectangle(0, y1, GameConfig::BASE_W, GameConfig::BASE_H - y1, dark);    // bottom
-    DrawRectangle(0, y0, x0, y1 - y0, dark);                                    // left
-    DrawRectangle(x1, y0, GameConfig::BASE_W - x1, y1 - y0, dark);              // right
-    // Soft additive glow so the lit area reads a touch brighter than the raw scene
-    BeginBlendMode(BLEND_ADDITIVE);
-    DrawCircleGradient(p, r * 0.9f,
-                       ColorAlpha(RAYWHITE, 0.18f), BLANK);
-    EndBlendMode();
 }
 
 void Game::drawHUD()
@@ -683,9 +610,10 @@ void Game::drawTitle()
     
     DrawRectangle(0, GameConfig::BASE_H / 2 - 130, GameConfig::BASE_W, 300,
                   ColorAlpha(BLACK, 0.45f));
+    drawCenteredText("NEON TRIGGER", GameConfig::BASE_H / 2 - 110, 72, RAYWHITE);
 
     const char* items[] = { "Start", "Quit" };
-    drawMenuList(items, 2, GameConfig::BASE_H / 2 - 45);
+    drawMenuList(items, 2, GameConfig::BASE_H / 2 + 10);
     drawCenteredText("UP/DOWN select   ENTER confirm", GameConfig::BASE_H - 40, 20, GRAY);
 }
 
@@ -700,6 +628,7 @@ void Game::drawCredits()
 void Game::drawMainMenu()
 {
     drawMenuBackdrop(true);
+    drawCenteredText("NEON TRIGGER", 90, 60, RAYWHITE);
 
     const char* items[] = { "Play", "Help", "High Scores", "Credits" };
     drawMenuList(items, 4, 260);

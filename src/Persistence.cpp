@@ -88,7 +88,6 @@ bool Persist::LoadGame(SaveData& out)
     SaveData d;
     if (in >> d.name >> d.level >> d.score >> d.hp)
     {
-        if (!(in >> d.wave)) d.wave = 1;   // old save files have no wave field
         out = d;
         return true;
     }
@@ -98,13 +97,12 @@ bool Persist::LoadGame(SaveData& out)
 void Persist::SaveGame(const SaveData& d)
 {
     std::ofstream out(filePath("savegame.txt"));
-    out << d.name << " " << d.level << " " << d.score << " " << d.hp << " " << d.wave << "\n";
+    out << d.name << " " << d.level << " " << d.score << " " << d.hp << "\n";
 }
 
 
 std::string Persist::LoadCredits()
 {
-    // Credits.txt sits in the project root, one level above the exe (build/).
     std::ifstream in(filePath("../Credits.txt"));
     if (!in.good())
         return "NEON TRIGGER\n\n(Credits.txt not found)";
