@@ -17,7 +17,7 @@ int main()
 
     Vector2 pos = GetMonitorPosition(1);
     SetWindowPosition(pos.x + 320, pos.y + 180);
-    // SetWindowSize(1920, 1080);b
+    // SetWindowSize(1920, 1080);
 
 
     RenderTexture2D canvas = LoadRenderTexture(GameConfig::BASE_W, GameConfig::BASE_H);

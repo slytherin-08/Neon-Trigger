@@ -50,7 +50,7 @@ namespace GameConfig {
     constexpr int POTION_HEAL = 1;
     constexpr float POTION_LIFETIME = 12.0f;
     constexpr float POTION_BLINK_TIME = 3.0f;
-    constexpr float POTION_SCALE = 0.15f;
+    constexpr float POTION_SCALE = 0.03f;
     constexpr float POTION_COLLIDER_RADIUS = 26.0f;
 
     // Enemy grunts (ambient)
