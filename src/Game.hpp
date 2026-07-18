@@ -45,7 +45,7 @@ private:
     void updateWaves();
     void startWave(int n);
     void startLevel(int n);
-    void beginRun(const std::string& name, int level, int score, int hp);
+    void beginRun(const std::string& name, int level, int score, int hp, int wave = 1);
     void finishRun();            // high-score submission at run end
 
     // --- screens ---
@@ -81,8 +81,10 @@ private:
     PickupManager _pickups;
     ParticleSystem _particles;
     Minimap _minimap;
+    Texture2D _lightTex = {};    // radial gradient for the flashlight overlay
     int _level = 1;
     int _wave = 1;
+    int _startWave = 1;   // wave the loaded level resumes at (1 = normal)
     int _score = 0;
 
     // --- app state ---

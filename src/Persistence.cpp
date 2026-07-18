@@ -88,6 +88,7 @@ bool Persist::LoadGame(SaveData& out)
     SaveData d;
     if (in >> d.name >> d.level >> d.score >> d.hp)
     {
+        if (!(in >> d.wave)) d.wave = 1;   // old save files have no wave field
         out = d;
         return true;
     }
@@ -97,7 +98,7 @@ bool Persist::LoadGame(SaveData& out)
 void Persist::SaveGame(const SaveData& d)
 {
     std::ofstream out(filePath("savegame.txt"));
-    out << d.name << " " << d.level << " " << d.score << " " << d.hp << "\n";
+    out << d.name << " " << d.level << " " << d.score << " " << d.hp << " " << d.wave << "\n";
 }
 
 

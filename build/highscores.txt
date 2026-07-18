@@ -1,9 +1,5 @@
 MBAPPE 10240
 MESSI 10220
 a 10000
-<<<<<<< HEAD
 a 6550
-=======
-jghigj 810
->>>>>>> fc17efe9658aecb9beab68ad66139eb0b9b64229
-JUJU 110
+taztan 2770

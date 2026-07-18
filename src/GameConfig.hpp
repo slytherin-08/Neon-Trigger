@@ -14,6 +14,10 @@ namespace GameConfig {
     constexpr float HALF_BASE_W = BASE_W * 0.5f;
     constexpr float HALF_BASE_H = BASE_H * 0.5f;
 
+    // Flashlight: lit radius around the player and how dark the rest is
+    constexpr float FLASHLIGHT_RADIUS = 220.0f;
+    constexpr float DARKNESS_ALPHA = 0.85f;
+
     inline float MAP_W = 0.0f;
     inline float MAP_H = 0.0f;
 

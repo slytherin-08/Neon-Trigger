@@ -36,6 +36,7 @@ namespace Persist
         int level = 1;
         int score = 0;
         int hp = 5;
+        int wave = 1;   // wave to resume at within the level
     };
     bool SaveExists();
     bool LoadGame(SaveData& out);               // false if no/invalid file
