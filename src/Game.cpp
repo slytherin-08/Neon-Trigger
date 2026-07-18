@@ -667,7 +667,7 @@ void Game::drawSplash()
 
     if (fmodf((float)GetTime(), 1.2f) < 0.8f)
     {
-        const char* prompt = "Press Enter to continue";
+        const char* prompt = "Press ENTER to Continue";
         int w = MeasureText(prompt, 36);
         int x = (GameConfig::BASE_W - w) / 2;
         int y = GameConfig::BASE_H - 130;
@@ -680,7 +680,7 @@ void Game::drawSplash()
 void Game::drawTitle()
 {
     drawMenuBackdrop(false);
-    // Soft dark band behind the text so it reads on any photo
+    
     DrawRectangle(0, GameConfig::BASE_H / 2 - 130, GameConfig::BASE_W, 300,
                   ColorAlpha(BLACK, 0.45f));
 
