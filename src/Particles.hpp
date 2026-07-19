@@ -2,10 +2,6 @@
 #include "raylib.h"
 #include <vector>
 
-
-// One particle = position + velocity + remaining lifetime.
-// Plain struct, no heap allocation per particle: the whole pool is
-// one contiguous vector, which is very cache-friendly to update.
 struct Particle
 {
     Vector2 pos = { 0.0f, 0.0f };
@@ -36,7 +32,7 @@ public:
     }
 
 private:
-    std::vector<Particle> _pool;   // fixed size, slots recycled
-    int _next = 0;                 // ring cursor: oldest slot is reused first
+    std::vector<Particle> _pool;
+    int _next = 0;
     const Texture2D* _tex = nullptr;
 };

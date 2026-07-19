@@ -2,6 +2,7 @@
 
 namespace RK
 {
+    // Image Part
     constexpr const char* GAME_BG = "gameBg";
     constexpr const char* GAME_FG = "gameFg";
     constexpr const char* PLAYER = "player";
@@ -20,7 +21,7 @@ namespace RK
     
     constexpr const char* GAME_BG_COLLISION = "gameBgCollision";
 
-    // Sounds
+    // Audio Part
     constexpr const char* SND_SHOOT = "snd-shoot";
     constexpr const char* SND_ZOMBIE_DEATH = "snd-zombie-death";
     constexpr const char* SND_MUTANT_DEATH = "snd-mutant-death";
@@ -36,6 +37,6 @@ namespace RK
     constexpr const char* SND_GRUNT_GRUNT = "snd-grunt-grunt";
     constexpr const char* SND_KNIGHT_GRUNT = "snd-knight-grunt";
 
-    // Music
+    // BG Music
     constexpr const char* MUS_DARKLING = "mus-darkling";
 }

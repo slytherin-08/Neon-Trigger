@@ -2,7 +2,7 @@
 #include "ResourceKeys.hpp"
 #include "ResourceManager.hpp"
 #include "GameConfig.hpp"
-#include "raymath.h"      // must precede NeonUtils.hpp: it defines the Vector2 operators
+#include "raymath.h"
 #include "NeonUtils.hpp"
 
 
@@ -12,10 +12,6 @@ void ParticleSystem::Init()
     _pool.resize(GameConfig::PARTICLE_POOL_SIZE);
 }
 
-// Burst emitter: 'count' particles fly out in random directions with
-// random speed/lifetime in the given ranges. Uses a ring cursor instead
-// of searching for dead slots — if the pool is full, the oldest
-// particles simply get overwritten (visually unnoticeable).
 void ParticleSystem::Emit(Vector2 pos, int count, Color color,
                           float speedMin, float speedMax,
                           float lifeMin, float lifeMax, float size)
@@ -52,7 +48,6 @@ void ParticleSystem::Update(float dt)
         }
 
         p.pos += p.vel * dt;
-        // Exponential-ish drag: particles burst out fast, then settle.
         p.vel *= 1.0f - GameConfig::PARTICLE_DRAG * dt;
     }
 }
@@ -65,9 +60,9 @@ void ParticleSystem::Draw() const
     {
         if (!p.alive) continue;
 
-        float t = p.life / p.maxLife;               // 1 at birth -> 0 at death
-        Color c = ColorAlpha(p.color, t);           // fade out
-        float s = p.size * (0.5f + 0.5f * t);       // shrink as it dies
+        float t = p.life / p.maxLife;
+        Color c = ColorAlpha(p.color, t);
+        float s = p.size * (0.5f + 0.5f * t);
 
         Rectangle src = { 0.0f, 0.0f, (float)_tex->width, (float)_tex->height };
         Rectangle dst = { p.pos.x, p.pos.y, s, s };
