@@ -9,27 +9,22 @@ int main()
 {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(GameConfig::BASE_W, GameConfig::BASE_H, "NEON TRIGGER");
-    InitAudioDevice();  // must exist before any LoadSound/LoadMusicStream
+    InitAudioDevice();
     SetTargetFPS(60);
     SetExitKey(KEY_NULL);
-    // Cursor visibility is managed per-screen by Game (hidden while playing).
     RM::get().Load();
-
-    Vector2 pos = GetMonitorPosition(1);
-    SetWindowPosition(pos.x + 320, pos.y + 180);
-    // SetWindowSize(1920, 1080);
-
 
     RenderTexture2D canvas = LoadRenderTexture(GameConfig::BASE_W, GameConfig::BASE_H);
     SetTextureFilter(canvas.texture, TEXTURE_FILTER_BILINEAR);
 
-    Game game;
+    Game game; // Whole Game.cpp constructor ke ekhane anbe
 
     while (!WindowShouldClose() && !game.HandleInput())
     {
         game.Update(GetFrameTime());
         game.Draw(canvas);
 
+        //letterboxing korbo next 6 line
         float scale = std::min(
             (float)GetScreenWidth() / GameConfig::BASE_W,
             (float)GetScreenHeight() / GameConfig::BASE_H);
