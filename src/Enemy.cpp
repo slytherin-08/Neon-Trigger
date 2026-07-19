@@ -5,7 +5,7 @@
 #include "GameConfig.hpp"
 #include "raymath.h"
 
-
+//hit hoile for .12 second it will be red
 constexpr float HURT_FLASH_TIME = 0.12f;
 
 
@@ -16,8 +16,8 @@ Enemy::Enemy()
     _transform.rotation = 0.0f;
 }
 
-// Pulls everything type-specific out of the config table.
-// Called on every Activate, so a pooled enemy can be reused as a different type.
+// Pull everything type specific out of the config table
+// Activate call korbo, so a pooled enemy can be reused as a different type.
 void Enemy::applyType(EnemyType type)
 {
     _type = type;
@@ -45,15 +45,14 @@ bool Enemy::TakeDamage(int dmg)
         return true;
     }
 
-    // Survived: pain yelp. Random pitch keeps repeated hits from
-    // sounding like the exact same sample every time.
+    // same sample every time eki sound korbe
     Audio::Play(RK::SND_ZOMBIE_PAIN, 1.0f, RandomFloat(0.9f, 1.15f));
 
     return false;
 }
 
-// Ambient grunt: volume falls off linearly with distance to the player,
-// so far-away enemies are quiet and nearby ones feel threatening.
+// volume ta fall off krbe linearly with distance to the player,
+// durer enemies are quiet and nearby ones feel threatening.
 void Enemy::grunt()
 {
     _gruntTimer = RandomFloat(GameConfig::GRUNT_MIN_INTERVAL,
@@ -115,14 +114,14 @@ void Enemy::Activate(Vector2 position, EnemyType type,
                      float speedMult, int hpBonus)
 {
     applyType(type);
-    // Level difficulty scaling on top of the base type stats
+    // Level difficulty
     _speed *= speedMult;
     _hp += hpBonus;
     _alive = true;
     _transform.position = position;
     _retargetTimer = 0.0f;
     _hurtTimer = 0.0f;
-    // Random initial delay so a fresh wave doesn't grunt in unison.
+    // Random initial delay jate fresh wave grunt na kore
     _gruntTimer = RandomFloat(0.0f, GameConfig::GRUNT_MAX_INTERVAL);
     _state = EnemyState::Moving;
     _spriteDeath.Reset();

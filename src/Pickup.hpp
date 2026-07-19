@@ -20,6 +20,6 @@ private:
     Transform2D _transform;
     Sprite _sprite;
     CircleCollider _collider;
-    float _lifeTimer = 0.0f;  // counts down; despawns at 0
+    float _lifeTimer = 0.0f; //despawn hbe
     bool _alive = false;
 };

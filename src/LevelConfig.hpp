@@ -2,12 +2,12 @@
 #include "EnemyType.hpp"
 
 
-// One row per level — same data-driven pattern as EnemyTypeConfig.
+// One row thakbe per level
 struct LevelConfig
 {
-    int   waveCount;                  // waves to clear this level
-    float speedMult;                  // enemy speed multiplier
-    int   hpBonus;                    // added to each enemy's base HP
+    int   waveCount;                  // level clear korte joto wave
+    float speedMult;                  // enemy speed kottuk barbe
+    int   hpBonus;                    // each enemy's base HP barbe kottuk
     bool  allowed[ENEMY_TYPE_COUNT];  // spawn mix: cockroach, scorpion, kliver, troll
 };
 

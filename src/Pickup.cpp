@@ -36,14 +36,13 @@ void Pickup::Draw() const
 {
     if (!_alive) return;
 
-    // Blink during the last seconds before despawning so the player
+    // Blink korbe last seconds e jate player
     // knows it's about to disappear.
     Color tint = WHITE;
     if (_lifeTimer < GameConfig::POTION_BLINK_TIME)
         tint = ColorAlpha(WHITE, 0.4f + 0.6f * fabsf(sinf((float)GetTime() * 8.0f)));
 
-    // Gentle vertical bob: purely visual, so we offset a copy of the
-    // transform and leave the collider's real position untouched.
+
     Transform2D visual = _transform;
     visual.position.y += sinf((float)GetTime() * 3.0f) * 4.0f;
 

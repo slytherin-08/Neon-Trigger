@@ -4,7 +4,7 @@
 #include <sstream>
 
 
-// Files live next to the executable (like the assets folder does).
+// executable er sathe thakbe (like the assets folder does).
 static std::string filePath(const char* name)
 {
     return std::string(GetApplicationDirectory()) + "/" + name;
@@ -62,7 +62,7 @@ void Persist::SaveHighScores(const HighScoreTable& t)
 
 bool Persist::TryInsertScore(HighScoreTable& t, const std::string& name, int score)
 {
-    // Find the first slot this score beats, shift the rest down one.
+
     for (size_t i = 0; i < t.size(); i++)
     {
         if (score > t[i].score)
@@ -88,7 +88,7 @@ bool Persist::LoadGame(SaveData& out)
     SaveData d;
     if (in >> d.name >> d.level >> d.score >> d.hp)
     {
-        if (!(in >> d.wave)) d.wave = 1;   // old save files have no wave field
+        if (!(in >> d.wave)) d.wave = 1;
         out = d;
         return true;
     }
@@ -104,7 +104,7 @@ void Persist::SaveGame(const SaveData& d)
 
 std::string Persist::LoadCredits()
 {
-    // Credits.txt sits in the project root, one level above the exe (build/).
+    
     std::ifstream in(filePath("../Credits.txt"));
     if (!in.good())
         return "NEON TRIGGER\n\n(Credits.txt not found)";

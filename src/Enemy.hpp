@@ -4,7 +4,7 @@
 #include "CircleCollider.hpp"
 #include "EnemyType.hpp"
 
-
+//enemey just moving state e hurt korbe
 class Player;
 
 

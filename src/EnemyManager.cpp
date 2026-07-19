@@ -34,8 +34,7 @@ void EnemyManager::SpawnBatch(int count)
     _staggerTimer = 0.0f;
     TraceLog(LOG_INFO, "ENEMY_MGR: Batch of %d enemies queued", count);
 }
-
-// Uniform random pick among the types this level allows.
+//randomly picks enemy
 EnemyType EnemyManager::pickType() const
 {
     EnemyType allowed[ENEMY_TYPE_COUNT];
