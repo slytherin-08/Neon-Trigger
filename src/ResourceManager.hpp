@@ -43,7 +43,6 @@ private:
 
 };
 
-// RM::get()
 namespace RM
 {
     inline ResourceManager& get() { return ResourceManager::instance(); }

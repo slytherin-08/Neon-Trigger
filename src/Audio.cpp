@@ -14,6 +14,5 @@ void Audio::Play(const char* key, float vol, float pitch)
 
 void Audio::ApplyMusicVolume()
 {
-    // 0.4 is the base mix level the game was tuned at
     SetMusicVolume(RM::get().GetMusic(RK::MUS_DARKLING), 0.4f * musicVol);
 }

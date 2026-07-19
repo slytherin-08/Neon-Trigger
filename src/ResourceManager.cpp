@@ -42,8 +42,6 @@ void ResourceManager::Load()
     loadTexture(RK::HEALTH_POTION, "healthPotion.png");
     loadTexture(RK::PARTICLE_DOT, "ParticleDot.png");
 
-    // Title background lives in the project root; optional so a missing
-    // photo doesn't crash the game (a plain backdrop is drawn instead).
     if (FileExists("../../temp_bg.png"))
         loadTexture(RK::TITLE_BG, "../../temp_bg.png");
 
@@ -68,7 +66,6 @@ void ResourceManager::Load()
 
     loadMusic(RK::MUS_DARKLING, "Darkling.mp3");
 
-    // Restore the working directory so save files land next to the exe.
     ChangeDirectory(GetApplicationDirectory());
 
     TraceLog(LOG_INFO, "ResourceManager: loaded %d textures", (int)_textures.size());
